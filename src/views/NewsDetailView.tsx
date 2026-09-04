@@ -24,7 +24,7 @@ export default function NewsDetailView({ id, onBack, onNavigateToNews }: { id: s
       </header>
 
       <div className="max-w-md mx-auto">
-        <div className="px-4 py-6 space-y-3">
+        <div className="px-6 py-6 space-y-3">
           <h1 className="text-2xl font-extrabold tracking-tight leading-tight">{news.title}</h1>
           <div className="text-xs text-gray-500 font-medium">
             Published {new Date(news.date).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
@@ -33,7 +33,7 @@ export default function NewsDetailView({ id, onBack, onNavigateToNews }: { id: s
 
         <img src={news.image} alt={news.title} className="w-full h-64 object-cover" />
 
-        <div className="px-4 py-8 space-y-4">
+        <div className="px-6 py-8 space-y-4">
           <p className="text-base font-medium text-gray-200 leading-relaxed italic mb-6">
             {news.summary}
           </p>
@@ -64,7 +64,7 @@ export default function NewsDetailView({ id, onBack, onNavigateToNews }: { id: s
           </div>
 
           {suggestedArticles.length > 0 && (
-            <div className="mt-12 pt-8 border-t border-white/5 -mx-4 px-4">
+            <div className="mt-12 pt-8 border-t border-white/5 -mx-6 px-6">
               <h2 className="text-xl font-bold mb-4">Read Next</h2>
               <div className="flex gap-4 overflow-x-auto pb-4 no-scrollbar snap-x">
                 {suggestedArticles.map(article => (
@@ -77,7 +77,7 @@ export default function NewsDetailView({ id, onBack, onNavigateToNews }: { id: s
                     <div className="flex flex-col flex-1">
                       <span className="text-[10px] font-bold text-[var(--color-primary)] uppercase tracking-wider mb-1">{article.type}</span>
                       <h4 className="text-sm font-bold text-gray-200 leading-tight group-hover:text-white transition line-clamp-2">{article.title}</h4>
-                      <p className="text-xs text-gray-500 mt-2 mt-auto">{new Date(article.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</p>
+                      <p className="text-xs text-gray-500 mt-4 mt-auto">{new Date(article.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</p>
                     </div>
                   </div>
                 ))}

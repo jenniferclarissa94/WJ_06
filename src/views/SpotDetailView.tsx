@@ -1,6 +1,7 @@
 import { MOCK_SPOTS } from '../data';
 import { ArrowLeft, MapPin, Heart, Wifi, Volume2, Share2, PenLine, X, Link, Twitter, Facebook } from 'lucide-react';
 import { useState } from 'react';
+import { createPortal } from 'react-dom';
 
 export default function SpotDetailView({ id, onBack, onRequireLogin }: { id: string, onBack: () => void, onRequireLogin?: () => void }) {
   const spot = MOCK_SPOTS.find(s => s.id === id);
@@ -19,16 +20,17 @@ export default function SpotDetailView({ id, onBack, onRequireLogin }: { id: str
 
   return (
     <div className="pb-24 animate-in fade-in bg-[var(--color-dark-bg)] min-h-screen">
-      {selectedImage && (
+      {selectedImage && typeof document !== 'undefined' && createPortal(
         <div className="fixed inset-0 z-[100] bg-black/90 flex items-center justify-center p-4 animate-in fade-in" onClick={() => setSelectedImage(null)}>
           <button className="absolute top-6 right-6 text-white bg-black/50 p-2 rounded-full hover:bg-white/20 transition">
             <X size={24} />
           </button>
           <img src={selectedImage} alt="Preview" className="max-w-full max-h-full object-contain rounded-lg" />
-        </div>
+        </div>,
+        document.body
       )}
 
-      {showShareMenu && (
+      {showShareMenu && typeof document !== 'undefined' && createPortal(
         <div className="fixed inset-0 z-[100] bg-black/60 backdrop-blur-sm flex items-end sm:items-center justify-center animate-in fade-in" onClick={() => setShowShareMenu(false)}>
           <div className="bg-[var(--color-dark-surface)] w-full sm:w-96 rounded-t-2xl sm:rounded-2xl p-6 shadow-2xl border border-white/10" onClick={e => e.stopPropagation()}>
             <div className="flex justify-between items-center mb-6">
@@ -50,7 +52,8 @@ export default function SpotDetailView({ id, onBack, onRequireLogin }: { id: str
               </button>
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
 
       <div className="relative h-72 w-full">
@@ -185,9 +188,14 @@ export default function SpotDetailView({ id, onBack, onRequireLogin }: { id: str
               </div>
             </div>
           </div>
-          <button className="w-full bg-[var(--color-primary)] text-white font-bold py-2.5 rounded-xl shadow-[0_0_15px_rgba(77,71,208,0.4)] hover:scale-[0.98] transition-transform">
+          <a 
+            href={`https://www.google.com/maps/dir/?api=1&destination=${spot.lat_long[0]},${spot.lat_long[1]}`}
+            target="_blank"
+            rel="noreferrer"
+            className="w-full flex items-center justify-center bg-[var(--color-primary)] text-white font-bold py-2.5 rounded-xl shadow-[0_0_15px_rgba(77,71,208,0.4)] hover:scale-[0.98] transition-transform"
+          >
             Get Directions
-          </button>
+          </a>
         </div>
       </div>
     </div>

@@ -1,6 +1,7 @@
 import { MOCK_EVENTS } from '../data';
 import { ArrowLeft, Calendar, MapPin, Ticket, ExternalLink, X } from 'lucide-react';
 import { useState } from 'react';
+import { createPortal } from 'react-dom';
 
 export default function EventDetailView({ id, onBack }: { id: string, onBack: () => void }) {
   const evt = MOCK_EVENTS.find(e => e.id === id);
@@ -10,13 +11,14 @@ export default function EventDetailView({ id, onBack }: { id: string, onBack: ()
 
   return (
     <div className="pb-24 animate-in fade-in bg-[var(--color-dark-bg)] min-h-screen">
-      {selectedImage && (
+      {selectedImage && typeof document !== 'undefined' && createPortal(
         <div className="fixed inset-0 z-[100] bg-black/90 flex items-center justify-center p-4 animate-in fade-in" onClick={() => setSelectedImage(null)}>
           <button className="absolute top-6 right-6 text-white bg-black/50 p-2 rounded-full hover:bg-white/20 transition">
             <X size={24} />
           </button>
           <img src={selectedImage} alt="Preview" className="max-w-full max-h-full object-contain rounded-lg" />
-        </div>
+        </div>,
+        document.body
       )}
 
       <div className="relative h-72 w-full">
