@@ -14,10 +14,18 @@ import MyTipsView from './views/MyTipsView';
 import NotificationSettingsView from './views/NotificationSettingsView';
 import LoginView from './views/LoginView';
 import SignUpView from './views/SignUpView';
+import GeminiModal from './components/GeminiModal';
 
 export default function App() {
   const [currentTab, setCurrentTab] = useState('home');
   const [detailView, setDetailView] = useState<{type: string, id: string} | null>(null);
+  const [isGeminiOpen, setIsGeminiOpen] = useState(false);
+  const [geminiInitialPrompt, setGeminiInitialPrompt] = useState<string | undefined>(undefined);
+
+  const handleOpenGemini = (prompt?: string) => {
+    setGeminiInitialPrompt(prompt);
+    setIsGeminiOpen(true);
+  };
 
   const navigateTab = (tab: string) => {
     setCurrentTab(tab);
@@ -27,9 +35,9 @@ export default function App() {
   const renderView = () => {
     if (detailView) {
       switch (detailView.type) {
-        case 'spot': return <SpotDetailView id={detailView.id} onBack={() => setDetailView(null)} onRequireLogin={() => setDetailView({type: 'login', id: ''})} />;
-        case 'event': return <EventDetailView id={detailView.id} onBack={() => setDetailView(null)} />;
-        case 'news': return <NewsDetailView id={detailView.id} onBack={() => setDetailView(null)} onNavigateToNews={(newId) => setDetailView({type: 'news', id: newId})} />;
+        case 'spot': return <SpotDetailView id={detailView.id} onBack={() => setDetailView(null)} onRequireLogin={() => setDetailView({type: 'login', id: ''})} onOpenGemini={handleOpenGemini} />;
+        case 'event': return <EventDetailView id={detailView.id} onBack={() => setDetailView(null)} onOpenGemini={handleOpenGemini} />;
+        case 'news': return <NewsDetailView id={detailView.id} onBack={() => setDetailView(null)} onNavigateToNews={(newId) => setDetailView({type: 'news', id: newId})} onOpenGemini={handleOpenGemini} />;
         case 'settings': return <SettingsView onBack={() => setDetailView(null)} />;
         case 'loved_spots': return <LovedSpotsView onBack={() => setDetailView(null)} navigateDetail={(type, id) => setDetailView({type, id})} />;
         case 'my_tips': return <MyTipsView onBack={() => setDetailView(null)} navigateDetail={(type, id) => setDetailView({type, id})} />;
@@ -41,17 +49,17 @@ export default function App() {
 
     switch (currentTab) {
       case 'home':
-        return <HomeView navigate={navigateTab} navigateDetail={(type, id) => setDetailView({type, id})} />;
+        return <HomeView navigate={navigateTab} navigateDetail={(type, id) => setDetailView({type, id})} onOpenGemini={handleOpenGemini} />;
       case 'culinary':
-        return <CulinaryView navigateDetail={(type, id) => setDetailView({type, id})} />;
+        return <CulinaryView navigateDetail={(type, id) => setDetailView({type, id})} onOpenGemini={handleOpenGemini} />;
       case 'events':
-        return <EventsView navigateDetail={(type, id) => setDetailView({type, id})} />;
+        return <EventsView navigateDetail={(type, id) => setDetailView({type, id})} onOpenGemini={handleOpenGemini} />;
       case 'news':
-        return <NewsView navigateDetail={(type, id) => setDetailView({type, id})} />;
+        return <NewsView navigateDetail={(type, id) => setDetailView({type, id})} onOpenGemini={handleOpenGemini} />;
       case 'profile':
-        return <ProfileView navigateDetail={(type, id) => setDetailView({type, id})} />;
+        return <ProfileView navigateDetail={(type, id) => setDetailView({type, id})} onOpenGemini={handleOpenGemini} />;
       default:
-        return <HomeView navigate={navigateTab} navigateDetail={(type, id) => setDetailView({type, id})} />;
+        return <HomeView navigate={navigateTab} navigateDetail={(type, id) => setDetailView({type, id})} onOpenGemini={handleOpenGemini} />;
     }
   };
 
@@ -68,6 +76,16 @@ export default function App() {
 
       {/* Navigation */}
       <BottomNav currentTab={currentTab} onTabChange={navigateTab} />
+
+      {/* Gemini AI Assistant Modal */}
+      <GeminiModal 
+        isOpen={isGeminiOpen} 
+        onClose={() => {
+          setIsGeminiOpen(false);
+          setGeminiInitialPrompt(undefined);
+        }} 
+        initialPrompt={geminiInitialPrompt} 
+      />
     </div>
   );
 }

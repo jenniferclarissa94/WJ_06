@@ -1,14 +1,54 @@
 import { MOCK_SPOTS } from '../data';
-import { ArrowLeft, MapPin, Heart, Wifi, Volume2, Share2, PenLine, X, Link, Twitter, Facebook } from 'lucide-react';
+import { ArrowLeft, MapPin, Heart, Wifi, Volume2, Share2, PenLine, X, Link, Twitter, Facebook, ExternalLink, Camera } from 'lucide-react';
 import { useState } from 'react';
 import { createPortal } from 'react-dom';
+import GeminiHeaderButton from '../components/GeminiHeaderButton';
+import ImagePreviewModal from '../components/ImagePreviewModal';
 
-export default function SpotDetailView({ id, onBack, onRequireLogin }: { id: string, onBack: () => void, onRequireLogin?: () => void }) {
+export default function SpotDetailView({ 
+  id, 
+  onBack, 
+  onRequireLogin,
+  onOpenGemini 
+}: { 
+  id: string, 
+  onBack: () => void, 
+  onRequireLogin?: () => void,
+  onOpenGemini?: (prompt?: string) => void 
+}) {
   const spot = MOCK_SPOTS.find(s => s.id === id);
-  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [previewIndex, setPreviewIndex] = useState<number | null>(null);
   const [showShareMenu, setShowShareMenu] = useState(false);
 
+  const defaultTips = [
+    {
+      name: 'Rara T.',
+      avatar: '/assets/avatars/rara.jpg',
+      fallbackAvatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80',
+      tip: "Don't come after 4 PM on a weekend, you won't get a seat."
+    },
+    {
+      name: 'Bimo',
+      avatar: '/assets/avatars/bimo.jpg',
+      fallbackAvatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=150&q=80',
+      tip: 'Their matcha latte is secretly the best item on the menu.'
+    }
+  ];
+
+  const tips = (spot?.insider_tips && spot.insider_tips.length > 0) ? spot.insider_tips : defaultTips;
+
   if (!spot) return <div>Spot not found</div>;
+
+  const galleryImages = Array.from(new Set([
+    ...spot.images,
+    ...(spot.ambiance_images || []),
+    ...(spot.menu_recommendations?.map(m => m.image) || [])
+  ])).filter(Boolean);
+
+  const handleOpenPreview = (imgUrl: string) => {
+    const idx = galleryImages.indexOf(imgUrl);
+    setPreviewIndex(idx !== -1 ? idx : 0);
+  };
 
   const handleShare = (type: string) => {
     if (type === 'link') {
@@ -20,15 +60,13 @@ export default function SpotDetailView({ id, onBack, onRequireLogin }: { id: str
 
   return (
     <div className="pb-24 animate-in fade-in bg-[var(--color-dark-bg)] min-h-screen">
-      {selectedImage && typeof document !== 'undefined' && createPortal(
-        <div className="fixed inset-0 z-[100] bg-black/90 flex items-center justify-center p-4 animate-in fade-in" onClick={() => setSelectedImage(null)}>
-          <button className="absolute top-6 right-6 text-white bg-black/50 p-2 rounded-full hover:bg-white/20 transition">
-            <X size={24} />
-          </button>
-          <img src={selectedImage} alt="Preview" className="max-w-full max-h-full object-contain rounded-lg" />
-        </div>,
-        document.body
-      )}
+      <ImagePreviewModal
+        images={galleryImages}
+        initialIndex={previewIndex ?? 0}
+        isOpen={previewIndex !== null}
+        onClose={() => setPreviewIndex(null)}
+        title={spot.name}
+      />
 
       {showShareMenu && typeof document !== 'undefined' && createPortal(
         <div className="fixed inset-0 z-[100] bg-black/60 backdrop-blur-sm flex items-end sm:items-center justify-center animate-in fade-in" onClick={() => setShowShareMenu(false)}>
@@ -60,8 +98,8 @@ export default function SpotDetailView({ id, onBack, onRequireLogin }: { id: str
         <img 
           src={spot.images[0]} 
           alt={spot.name} 
-          className="w-full h-full object-cover cursor-pointer" 
-          onClick={() => setSelectedImage(spot.images[0])}
+          className="w-full h-full object-cover cursor-pointer hover:opacity-95 transition" 
+          onClick={() => handleOpenPreview(spot.images[0])}
           onError={(e) => { e.currentTarget.src = 'https://images.unsplash.com/photo-1514933651103-005eec06c04b?auto=format&fit=crop&w=600&q=80'; }}
         />
         <div className="absolute inset-0 bg-gradient-to-t from-[var(--color-dark-bg)] to-transparent pointer-events-none" />
@@ -69,15 +107,28 @@ export default function SpotDetailView({ id, onBack, onRequireLogin }: { id: str
         <button onClick={onBack} className="absolute top-6 left-4 w-10 h-10 rounded-full bg-black/40 backdrop-blur-md flex items-center justify-center border border-white/10 hover:bg-white/10 transition z-10">
           <ArrowLeft size={20} className="text-white" />
         </button>
-        <button onClick={() => setShowShareMenu(true)} className="absolute top-6 right-4 w-10 h-10 rounded-full bg-black/40 backdrop-blur-md flex items-center justify-center border border-white/10 hover:bg-white/10 transition z-10">
-          <Share2 size={18} className="text-white" />
+        <button 
+          onClick={() => handleOpenPreview(spot.images[0])} 
+          className="absolute bottom-4 right-4 z-10 flex items-center gap-1.5 bg-black/60 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/10 text-xs font-semibold hover:bg-black/80 transition text-white cursor-pointer"
+        >
+          <Camera size={14} /> {galleryImages.length} Photos
         </button>
+        <div className="absolute top-6 right-4 flex items-center gap-2 z-10">
+          {onOpenGemini && (
+            <GeminiHeaderButton 
+              onClick={() => onOpenGemini(`Tell me more about ${spot.name} in ${spot.district}. What's the vibe, best menu items, and the crowd like?`)} 
+            />
+          )}
+          <button onClick={() => setShowShareMenu(true)} className="w-10 h-10 rounded-full bg-black/40 backdrop-blur-md flex items-center justify-center border border-white/10 hover:bg-white/10 transition">
+            <Share2 size={18} className="text-white" />
+          </button>
+        </div>
       </div>
 
       <div className="px-4 -mt-8 relative z-10 space-y-6 max-w-md mx-auto">
         <div>
           <div className="flex justify-between items-start mb-2">
-            <span className="text-xs font-bold text-[var(--color-primary)] bg-[var(--color-primary)]/10 px-2 py-1 rounded uppercase tracking-wide">
+            <span className="text-[10px] font-bold text-white bg-[var(--color-primary)] px-2.5 py-0.5 rounded-[4px] uppercase tracking-wider shadow-sm">
               {spot.category}
             </span>
             <button className="flex items-center gap-1 bg-white/5 border border-white/10 px-3 py-1.5 rounded-full text-xs font-medium">
@@ -119,18 +170,32 @@ export default function SpotDetailView({ id, onBack, onRequireLogin }: { id: str
           </p>
         </div>
 
-        {spot.images.length > 1 && (
+        {(galleryImages.length > 1) && (
           <div>
-            <h2 className="text-lg font-bold mb-3">Ambiance & Details</h2>
+            <div className="flex items-center justify-between mb-3">
+              <h2 className="text-lg font-bold">Ambiance & Gallery ({galleryImages.length})</h2>
+              <button
+                onClick={() => handleOpenPreview(galleryImages[0])}
+                className="text-xs text-[var(--color-secondary)] hover:underline font-semibold"
+              >
+                View all
+              </button>
+            </div>
             <div className="flex gap-3 overflow-x-auto pb-4 no-scrollbar -mx-4 px-4 snap-x">
-              {spot.images.slice(1).map((img, i) => (
-                <img 
+              {galleryImages.map((img, i) => (
+                <div 
                   key={i} 
-                  src={img} 
-                  alt={`${spot.name} detail ${i}`} 
-                  onClick={() => setSelectedImage(img)}
-                  className="w-40 h-32 object-cover rounded-xl shrink-0 snap-start border border-white/5 shadow-sm cursor-pointer" 
-                />
+                  className="relative shrink-0 snap-start group cursor-pointer"
+                  onClick={() => handleOpenPreview(img)}
+                >
+                  <img 
+                    src={img} 
+                    alt={`${spot.name} photo ${i + 1}`} 
+                    referrerPolicy="no-referrer"
+                    className="w-40 h-32 object-cover rounded-xl border border-white/5 shadow-sm group-hover:scale-[1.02] transition duration-300" 
+                  />
+                  <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent rounded-xl transition" />
+                </div>
               ))}
             </div>
           </div>
@@ -142,7 +207,13 @@ export default function SpotDetailView({ id, onBack, onRequireLogin }: { id: str
             <div className="space-y-3">
               {spot.menu_recommendations.map((menu, i) => (
                 <div key={i} className="flex gap-3 bg-[var(--color-dark-surface)] p-2.5 rounded-xl border border-white/5 items-center shadow-sm">
-                  <img src={menu.image} alt={menu.name} className="w-16 h-16 rounded-lg object-cover shrink-0" />
+                  <img 
+                    src={menu.image} 
+                    alt={menu.name} 
+                    referrerPolicy="no-referrer" 
+                    onClick={() => handleOpenPreview(menu.image)}
+                    className="w-16 h-16 rounded-lg object-cover shrink-0 cursor-pointer hover:opacity-90 transition" 
+                  />
                   <div>
                     <h4 className="text-sm font-bold text-gray-200">{menu.name}</h4>
                     <p className="text-sm text-[var(--color-secondary)] font-medium mt-0.5">{menu.price}</p>
@@ -155,39 +226,66 @@ export default function SpotDetailView({ id, onBack, onRequireLogin }: { id: str
 
         <div>
           <div className="flex items-center justify-between mb-3">
-            <h2 className="text-lg font-bold">Insider Tips (2)</h2>
+            <h2 className="text-lg font-bold">Insider Tips ({tips.length})</h2>
             <button onClick={onRequireLogin} className="text-xs font-bold text-white bg-white/10 px-3 py-1.5 rounded-full flex items-center gap-1.5 border border-white/5 hover:bg-white/20 transition">
               <PenLine size={12} /> Write a tip
             </button>
           </div>
           <div className="space-y-3 mb-6">
-            <div className="flex gap-3 bg-[var(--color-dark-surface)] p-3 rounded-xl border border-white/5">
-              <div className="w-8 h-8 rounded-full bg-gray-700 shrink-0"></div>
-              <div>
-                <h4 className="text-sm font-bold">Rara T.</h4>
-                <p className="text-xs text-gray-400 mt-1">Don't come after 4 PM on a weekend, you won't get a seat.</p>
+            {tips.map((item, index) => (
+              <div key={index} className="flex gap-3 bg-[var(--color-dark-surface)] p-3 rounded-xl border border-white/5 items-start">
+                <img 
+                  src={item.avatar} 
+                  alt={item.name} 
+                  referrerPolicy="no-referrer"
+                  onError={(e) => {
+                    if (item.fallbackAvatar && e.currentTarget.src !== item.fallbackAvatar) {
+                      e.currentTarget.src = item.fallbackAvatar;
+                    } else {
+                      e.currentTarget.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(item.name)}&background=4D47D0&color=fff&size=128`;
+                    }
+                  }}
+                  className="w-8 h-8 rounded-full object-cover shrink-0 border border-white/10" 
+                />
+                <div>
+                  <h4 className="text-sm font-bold text-gray-100">{item.name}</h4>
+                  <p className="text-xs text-gray-400 mt-1 leading-relaxed">{item.tip}</p>
+                </div>
               </div>
-            </div>
-            <div className="flex gap-3 bg-[var(--color-dark-surface)] p-3 rounded-xl border border-white/5">
-              <div className="w-8 h-8 rounded-full bg-gray-700 shrink-0"></div>
-              <div>
-                <h4 className="text-sm font-bold">Bimo</h4>
-                <p className="text-xs text-gray-400 mt-1">Their matcha latte is secretly the best item on the menu.</p>
-              </div>
-            </div>
+            ))}
           </div>
         </div>
         
         <div className="pt-2">
           <h2 className="text-lg font-bold mb-3">Location</h2>
-          <div className="rounded-xl overflow-hidden h-32 mb-4 relative border border-white/10 shadow-sm">
-            <img src="/Screenshot%202026-09-04%20at%2002.23.25.png" alt="Map Preview" className="w-full h-full object-cover" />
+          <a 
+            href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(spot.name + ' ' + spot.district + ' Jakarta')}`}
+            target="_blank"
+            rel="noreferrer"
+            aria-label="Open in Google Maps"
+            className="block rounded-xl overflow-hidden h-36 mb-4 relative border border-white/10 shadow-sm group hover:border-[var(--color-primary)] transition-all cursor-pointer"
+          >
+            <img 
+              src="/Screenshot%202026-09-04%20at%2002.23.25.png" 
+              alt={`${spot.name} Google Maps Preview`} 
+              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 brightness-90 group-hover:brightness-100" 
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/20 pointer-events-none" />
             <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-              <div className="bg-[var(--color-primary)] text-white w-10 h-10 rounded-full flex items-center justify-center shadow-[0_0_15px_rgba(77,71,208,0.5)]">
+              <div className="bg-[var(--color-primary)] text-white w-10 h-10 rounded-full flex items-center justify-center shadow-[0_0_15px_rgba(77,71,208,0.7)] group-hover:scale-110 transition-transform">
                 <MapPin size={20} />
               </div>
             </div>
-          </div>
+            <div className="absolute bottom-2.5 left-3 right-3 flex items-center justify-between text-xs pointer-events-none">
+              <span className="font-semibold text-white/90 drop-shadow-md flex items-center gap-1.5">
+                <MapPin size={13} className="text-[var(--color-secondary)]" />
+                {spot.district}
+              </span>
+              <span className="bg-black/60 backdrop-blur-md text-white text-[11px] font-medium px-2.5 py-1 rounded-full border border-white/10 flex items-center gap-1 group-hover:bg-[var(--color-primary)] transition-colors shadow">
+                Open in Google Maps <ExternalLink size={11} />
+              </span>
+            </div>
+          </a>
           <a 
             href={`https://www.google.com/maps/dir/?api=1&destination=${spot.lat_long[0]},${spot.lat_long[1]}`}
             target="_blank"

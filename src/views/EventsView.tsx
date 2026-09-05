@@ -1,8 +1,15 @@
 import { useState } from 'react';
 import { MOCK_EVENTS } from '../data';
 import { MapPin, Calendar, ExternalLink, Ticket } from 'lucide-react';
+import GeminiHeaderButton from '../components/GeminiHeaderButton';
 
-export default function EventsView({ navigateDetail }: { navigateDetail?: (type: string, id: string) => void }) {
+export default function EventsView({ 
+  navigateDetail,
+  onOpenGemini 
+}: { 
+  navigateDetail?: (type: string, id: string) => void,
+  onOpenGemini?: () => void 
+}) {
   const [activeTab, setActiveTab] = useState<'All' | 'Concert' | 'Exhibition' | 'Festival'>('All');
 
   const filteredEvents = MOCK_EVENTS.filter(evt => {
@@ -13,7 +20,10 @@ export default function EventsView({ navigateDetail }: { navigateDetail?: (type:
   return (
     <div className="pb-24 pt-6 px-4 max-w-md mx-auto space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
       <header className="sticky top-0 z-30 pt-2 pb-4 bg-[var(--color-dark-bg)]/90 backdrop-blur-lg">
-        <h1 className="text-3xl font-extrabold tracking-tight mb-4">Events</h1>
+        <div className="flex items-center justify-between mb-4">
+          <h1 className="text-3xl font-extrabold tracking-tight">Events</h1>
+          {onOpenGemini && <GeminiHeaderButton onClick={onOpenGemini} />}
+        </div>
         
         {/* Category Filters */}
         <div className="flex gap-2 overflow-x-auto pb-2 no-scrollbar">
@@ -56,7 +66,7 @@ export default function EventsView({ navigateDetail }: { navigateDetail?: (type:
               />
               <div className="absolute inset-0 bg-black/30" />
               <div className="absolute top-3 left-3">
-                <span className="text-[10px] font-bold text-black bg-[var(--color-secondary)] px-2 py-1 rounded uppercase">
+                <span className="text-[9px] font-bold uppercase tracking-wider text-black bg-[var(--color-secondary)] px-2 py-0.5 rounded-[4px] shadow-sm inline-block">
                   {evt.type}
                 </span>
               </div>

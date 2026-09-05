@@ -1,32 +1,50 @@
 import { MOCK_EVENTS } from '../data';
-import { ArrowLeft, Calendar, MapPin, Ticket, ExternalLink, X } from 'lucide-react';
+import { ArrowLeft, Calendar, MapPin, Ticket, ExternalLink } from 'lucide-react';
 import { useState } from 'react';
-import { createPortal } from 'react-dom';
+import GeminiHeaderButton from '../components/GeminiHeaderButton';
+import ImagePreviewModal from '../components/ImagePreviewModal';
 
-export default function EventDetailView({ id, onBack }: { id: string, onBack: () => void }) {
+export default function EventDetailView({ 
+  id, 
+  onBack,
+  onOpenGemini 
+}: { 
+  id: string, 
+  onBack: () => void,
+  onOpenGemini?: (prompt?: string) => void 
+}) {
   const evt = MOCK_EVENTS.find(e => e.id === id);
-  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [previewIndex, setPreviewIndex] = useState<number | null>(null);
 
   if (!evt) return <div>Not found</div>;
 
+  const galleryImages = Array.from(new Set([
+    evt.image,
+    ...(evt.additional_images || []),
+    ...(evt.concert_map ? [evt.concert_map] : [])
+  ])).filter(Boolean);
+
+  const handleOpenPreview = (imgUrl: string) => {
+    const idx = galleryImages.indexOf(imgUrl);
+    setPreviewIndex(idx !== -1 ? idx : 0);
+  };
+
   return (
     <div className="pb-24 animate-in fade-in bg-[var(--color-dark-bg)] min-h-screen">
-      {selectedImage && typeof document !== 'undefined' && createPortal(
-        <div className="fixed inset-0 z-[100] bg-black/90 flex items-center justify-center p-4 animate-in fade-in" onClick={() => setSelectedImage(null)}>
-          <button className="absolute top-6 right-6 text-white bg-black/50 p-2 rounded-full hover:bg-white/20 transition">
-            <X size={24} />
-          </button>
-          <img src={selectedImage} alt="Preview" className="max-w-full max-h-full object-contain rounded-lg" />
-        </div>,
-        document.body
-      )}
+      <ImagePreviewModal
+        images={galleryImages}
+        initialIndex={previewIndex ?? 0}
+        isOpen={previewIndex !== null}
+        onClose={() => setPreviewIndex(null)}
+        title={evt.title}
+      />
 
       <div className="relative h-72 w-full">
         <img 
           src={evt.image} 
           alt={evt.title} 
-          className="w-full h-full object-cover cursor-pointer"
-          onClick={() => setSelectedImage(evt.image)}
+          className="w-full h-full object-cover cursor-pointer hover:opacity-95 transition"
+          onClick={() => handleOpenPreview(evt.image)}
           onError={(e) => { e.currentTarget.src = 'https://images.unsplash.com/photo-1459749411175-04bf5292ceea?auto=format&fit=crop&w=600&q=80'; }}
         />
         <div className="absolute inset-0 bg-gradient-to-t from-[var(--color-dark-bg)] to-transparent pointer-events-none" />
@@ -34,8 +52,15 @@ export default function EventDetailView({ id, onBack }: { id: string, onBack: ()
         <button onClick={onBack} className="absolute top-6 left-4 w-10 h-10 rounded-full bg-black/40 backdrop-blur-md flex items-center justify-center border border-white/10 hover:bg-white/10 transition z-10">
           <ArrowLeft size={20} className="text-white" />
         </button>
+        <div className="absolute top-6 right-4 z-10">
+          {onOpenGemini && (
+            <GeminiHeaderButton 
+              onClick={() => onOpenGemini(`Tell me more about the event "${evt.title}" at ${evt.venue_name}. What should I expect, how is parking/transit, and what spots are nearby?`)} 
+            />
+          )}
+        </div>
         <div className="absolute bottom-4 left-4">
-          <span className="text-[10px] font-bold text-black bg-[var(--color-secondary)] px-2 py-1 rounded uppercase">
+          <span className="text-[9px] font-bold uppercase tracking-wider text-black bg-[var(--color-secondary)] px-2 py-0.5 rounded-[4px] shadow-sm inline-block">
             {evt.type}
           </span>
         </div>
@@ -77,8 +102,8 @@ export default function EventDetailView({ id, onBack }: { id: string, onBack: ()
                   key={i} 
                   src={img} 
                   alt={`${evt.title} gallery ${i}`} 
-                  onClick={() => setSelectedImage(img)}
-                  className="w-56 h-40 object-cover rounded-xl shrink-0 snap-start border border-white/5 shadow-sm cursor-pointer" 
+                  onClick={() => handleOpenPreview(img)}
+                  className="w-56 h-40 object-cover rounded-xl shrink-0 snap-start border border-white/5 shadow-sm cursor-pointer hover:opacity-90 transition" 
                 />
               ))}
             </div>
@@ -118,11 +143,46 @@ export default function EventDetailView({ id, onBack }: { id: string, onBack: ()
         {evt.concert_map && (
           <div className="pt-2">
             <h2 className="text-xl font-bold mb-3">Event Map</h2>
-            <div className="rounded-xl overflow-hidden h-48 mb-4 border border-white/10 shadow-sm relative group">
+            <div 
+              className="rounded-xl overflow-hidden h-48 mb-4 border border-white/10 shadow-sm relative group cursor-pointer"
+              onClick={() => handleOpenPreview(evt.concert_map!)}
+            >
               <img src={evt.concert_map} alt={`${evt.title} Map`} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
             </div>
           </div>
         )}
+        
+        <div className="pt-2">
+          <h2 className="text-xl font-bold mb-3">Location</h2>
+          <a 
+            href={evt.map_url || `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(evt.venue_name + ' Jakarta')}`}
+            target="_blank"
+            rel="noreferrer"
+            aria-label="Open in Google Maps"
+            className="block rounded-xl overflow-hidden h-36 mb-2 relative border border-white/10 shadow-sm group hover:border-[var(--color-primary)] transition-all cursor-pointer"
+          >
+            <img 
+              src="/Screenshot%202026-09-04%20at%2002.23.25.png" 
+              alt={`${evt.venue_name} Google Maps Preview`} 
+              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 brightness-90 group-hover:brightness-100" 
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/20 pointer-events-none" />
+            <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+              <div className="bg-[var(--color-primary)] text-white w-10 h-10 rounded-full flex items-center justify-center shadow-[0_0_15px_rgba(77,71,208,0.7)] group-hover:scale-110 transition-transform">
+                <MapPin size={20} />
+              </div>
+            </div>
+            <div className="absolute bottom-2.5 left-3 right-3 flex items-center justify-between text-xs pointer-events-none">
+              <span className="font-semibold text-white/90 drop-shadow-md flex items-center gap-1.5">
+                <MapPin size={13} className="text-[var(--color-secondary)]" />
+                {evt.venue_name}
+              </span>
+              <span className="bg-black/60 backdrop-blur-md text-white text-[11px] font-medium px-2.5 py-1 rounded-full border border-white/10 flex items-center gap-1 group-hover:bg-[var(--color-primary)] transition-colors shadow">
+                Open in Google Maps <ExternalLink size={11} />
+              </span>
+            </div>
+          </a>
+        </div>
         
         <div className="flex gap-3 pt-2">
           <a href={evt.ticket_url} target="_blank" rel="noreferrer" className="flex-1 bg-[var(--color-primary)] text-white py-3.5 rounded-xl text-sm font-bold flex items-center justify-center gap-2 hover:opacity-90 transition">

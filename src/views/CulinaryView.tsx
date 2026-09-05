@@ -1,8 +1,15 @@
 import { useState } from 'react';
 import { MOCK_SPOTS, Spot } from '../data';
 import { MapPin, Heart, Wifi, Volume2, DollarSign, Filter } from 'lucide-react';
+import GeminiHeaderButton from '../components/GeminiHeaderButton';
 
-export default function CulinaryView({ navigateDetail }: { navigateDetail?: (type: string, id: string) => void }) {
+export default function CulinaryView({ 
+  navigateDetail,
+  onOpenGemini 
+}: { 
+  navigateDetail?: (type: string, id: string) => void,
+  onOpenGemini?: () => void 
+}) {
   const [filter, setFilter] = useState<'Near Me' | 'WFC Friendly' | 'Late Night'>('Near Me');
 
   const filteredSpots = MOCK_SPOTS.filter(spot => {
@@ -19,9 +26,12 @@ export default function CulinaryView({ navigateDetail }: { navigateDetail?: (typ
       <header className="sticky top-0 z-30 pt-2 pb-4 bg-[var(--color-dark-bg)]/90 backdrop-blur-lg">
         <div className="flex items-center justify-between mb-4">
           <h1 className="text-3xl font-extrabold tracking-tight">Culinary</h1>
-          <a href="https://maps.google.com" target="_blank" rel="noreferrer" className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center border border-white/10 hover:bg-white/10 transition">
-            <MapPin size={20} className="text-white" />
-          </a>
+          <div className="flex items-center gap-2">
+            {onOpenGemini && <GeminiHeaderButton onClick={onOpenGemini} />}
+            <a href="https://maps.google.com" target="_blank" rel="noreferrer" className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center border border-white/10 hover:bg-white/10 transition">
+              <MapPin size={20} className="text-white" />
+            </a>
+          </div>
         </div>
         
         {/* Filters */}
@@ -61,21 +71,26 @@ export default function CulinaryView({ navigateDetail }: { navigateDetail?: (typ
                 className="w-full h-full object-cover" 
                 onError={(e) => { e.currentTarget.src = 'https://images.unsplash.com/photo-1514933651103-005eec06c04b?auto=format&fit=crop&w=600&q=80'; }}
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-[var(--color-dark-surface)] to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-t from-[var(--color-dark-surface)] via-[var(--color-dark-surface)]/50 to-transparent" />
               
-              <button className="absolute top-4 right-4 w-8 h-8 rounded-full bg-black/40 backdrop-blur-md flex items-center justify-center border border-white/10">
+              <button className="absolute top-4 right-4 w-8 h-8 rounded-full bg-black/40 backdrop-blur-md flex items-center justify-center border border-white/10 hover:bg-black/60 transition z-10">
                 <Heart size={16} className="text-pink-500 fill-current" />
               </button>
 
-              <div className="absolute bottom-3 left-4 right-4 flex justify-between items-end">
-                <div>
-                  <span className="text-[10px] font-bold text-[var(--color-primary)] bg-[var(--color-primary)]/10 px-2 py-1 rounded-sm uppercase tracking-wide">
-                    {spot.category}
-                  </span>
-                  <h3 className="text-xl font-bold mt-1 leading-tight">{spot.name}</h3>
+              <div className="absolute bottom-3.5 left-4 right-4 flex justify-between items-end gap-3 z-10">
+                <div className="min-w-0 flex-1">
+                  <div className="flex items-center gap-2 mb-1.5">
+                    <span className="text-[9px] font-bold uppercase tracking-wider text-white bg-[var(--color-primary)] px-2 py-0.5 rounded-[4px] shadow-sm shrink-0">
+                      {spot.category}
+                    </span>
+                    <span className="text-xs font-medium text-gray-200 truncate drop-shadow-sm">
+                      {spot.district}
+                    </span>
+                  </div>
+                  <h3 className="text-xl font-bold text-white leading-snug drop-shadow-md truncate">{spot.name}</h3>
                 </div>
-                <div className="flex flex-col items-end">
-                  <span className="text-xs font-bold text-white bg-white/10 backdrop-blur px-2 py-1 rounded flex items-center gap-1">
+                <div className="shrink-0 mb-0.5">
+                  <span className="text-xs font-medium text-white bg-black/60 backdrop-blur-md px-2.5 py-1 rounded-full flex items-center gap-1 border border-white/10 shadow-sm">
                     <MapPin size={12} className="text-[var(--color-primary)]" />
                     {spot.distance_km} km
                   </span>

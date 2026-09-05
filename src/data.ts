@@ -22,10 +22,20 @@ export interface Spot {
   price_range: PriceRange;
   price_level: 1 | 2 | 3;
   images: string[];
+  ambiance_images?: string[];
   love_count: number;
   distance_km?: number;
   menu_recommendations?: MenuItem[];
   tags?: string[];
+  insider_tips?: InsiderTip[];
+}
+
+export interface InsiderTip {
+  name: string;
+  avatar: string;
+  tip: string;
+  date?: string;
+  fallbackAvatar?: string;
 }
 
 export interface AppEvent {
@@ -102,9 +112,50 @@ export const MOCK_SPOTS: Spot[] = [
     price_range: 'Rp 50k - 100k',
     price_level: 2,
     images: [
-      'https://images.unsplash.com/photo-1559925393-8be0ec4767c8?auto=format&fit=crop&w=600&q=80',
-      'https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=600&q=80',
-      'https://images.unsplash.com/photo-1445116572660-236099ec97a0?auto=format&fit=crop&w=600&q=80'
+      '/assets/7Speed/speed2.png',
+      '/assets/7Speed/speed1.png',
+      '/assets/7Speed/speed3.png',
+      '/assets/7Speed/speed4.png',
+      '/assets/7Speed/speed5.png',
+      '/assets/7Speed/speed6.png',
+      '/assets/7Speed/speed7.png',
+      '/assets/7Speed/speed8.png',
+      '/assets/7Speed/speed9.png',
+      '/assets/7Speed/speed10.webp',
+      '/assets/7Speed/speed11.webp',
+      '/assets/7Speed/speed12.webp',
+      '/assets/7Speed/speed13.webp',
+      '/assets/7Speed/speed14.webp',
+      '/assets/7Speed/speed15.webp',
+      '/assets/7Speed/speed16.webp',
+      '/assets/7Speed/speed17.webp',
+      '/assets/7Speed/speed18.webp',
+      '/assets/7Speed/speed19.webp',
+      '/assets/7Speed/speed20.webp',
+      '/assets/7Speed/speed21.webp'
+    ],
+    ambiance_images: [
+      '/assets/7Speed/speed1.png',
+      '/assets/7Speed/speed2.png',
+      '/assets/7Speed/speed3.png',
+      '/assets/7Speed/speed4.png',
+      '/assets/7Speed/speed5.png',
+      '/assets/7Speed/speed6.png',
+      '/assets/7Speed/speed7.png',
+      '/assets/7Speed/speed8.png',
+      '/assets/7Speed/speed9.png',
+      '/assets/7Speed/speed10.webp',
+      '/assets/7Speed/speed11.webp',
+      '/assets/7Speed/speed12.webp',
+      '/assets/7Speed/speed13.webp',
+      '/assets/7Speed/speed14.webp',
+      '/assets/7Speed/speed15.webp',
+      '/assets/7Speed/speed16.webp',
+      '/assets/7Speed/speed17.webp',
+      '/assets/7Speed/speed18.webp',
+      '/assets/7Speed/speed19.webp',
+      '/assets/7Speed/speed20.webp',
+      '/assets/7Speed/speed21.webp'
     ],
     love_count: 890,
     distance_km: 1.2,
@@ -150,14 +201,51 @@ export const MOCK_SPOTS: Spot[] = [
     price_range: 'Rp 100k - 200k',
     price_level: 3,
     images: [
-      'https://drive.google.com/uc?export=download&id=1mKhGc1lT1j-j8URC-B8NlpafV_ZKd6w4'
+      '/assets/Zodiac/zod4.webp',
+      '/assets/Zodiac/zod1.webp',
+      '/assets/Zodiac/zod2.webp',
+      '/assets/Zodiac/zod3.webp',
+      '/assets/Zodiac/zod5.webp',
+      '/assets/Zodiac/zod7.webp',
+      '/assets/Zodiac/zod8.webp',
+      '/assets/Zodiac/zod9.webp',
+      '/assets/Zodiac/zod10.webp',
+      '/assets/Zodiac/zod11.webp',
+      '/assets/Zodiac/zod12.webp',
+      '/assets/Zodiac/zod13.webp',
+      '/assets/Zodiac/zod14.webp',
+      '/assets/Zodiac/zod15.webp',
+      '/assets/Zodiac/zod16.webp',
+      '/assets/Zodiac/zod17.webp',
+      '/assets/Zodiac/zod18.webp',
+      '/assets/Zodiac/zod19.webp'
+    ],
+    ambiance_images: [
+      '/assets/Zodiac/zod1.webp',
+      '/assets/Zodiac/zod2.webp',
+      '/assets/Zodiac/zod3.webp',
+      '/assets/Zodiac/zod4.webp',
+      '/assets/Zodiac/zod5.webp',
+      '/assets/Zodiac/zod7.webp',
+      '/assets/Zodiac/zod8.webp',
+      '/assets/Zodiac/zod9.webp',
+      '/assets/Zodiac/zod10.webp',
+      '/assets/Zodiac/zod11.webp',
+      '/assets/Zodiac/zod12.webp',
+      '/assets/Zodiac/zod13.webp',
+      '/assets/Zodiac/zod14.webp',
+      '/assets/Zodiac/zod15.webp',
+      '/assets/Zodiac/zod16.webp',
+      '/assets/Zodiac/zod17.webp',
+      '/assets/Zodiac/zod18.webp',
+      '/assets/Zodiac/zod19.webp'
     ],
     love_count: 3400,
     distance_km: 2.1,
     tags: ['late-night'],
     menu_recommendations: [
       { name: 'Tokyo Highball', price: 'Rp 150.000', image: 'https://images.unsplash.com/photo-1551024709-8f23befc6f87?auto=format&fit=crop&w=600&q=80' },
-      { name: 'Truffle Fries', price: 'Rp 85.000', image: 'https://images.unsplash.com/photo-1576107248818-b70c325c48b2?auto=format&fit=crop&w=600&q=80' }
+      { name: 'Truffle Fries', price: 'Rp 85.000', image: '/assets/truffle-fries.jpg' }
     ]
   },
   {
@@ -172,15 +260,48 @@ export const MOCK_SPOTS: Spot[] = [
     price_range: 'Rp 50k - 100k',
     price_level: 2,
     images: [
-      'https://drive.google.com/uc?export=download&id=1pMckvHr5DtXEIXatJT1HGnto5fQcpHNt',
-      'https://drive.google.com/uc?export=download&id=1SOW7-XrAHiopepbXU7_WP3v5vJFazVPQ'
+      '/assets/Little/little6.webp',
+      '/assets/Little/little1.webp',
+      '/assets/Little/little2.webp',
+      '/assets/Little/little3.webp',
+      '/assets/Little/little4.webp',
+      '/assets/Little/little5.webp',
+      '/assets/Little/little7.webp',
+      '/assets/Little/little8.webp',
+      '/assets/Little/little9.webp',
+      '/assets/Little/little0.png'
+    ],
+    ambiance_images: [
+      '/assets/Little/little1.webp',
+      '/assets/Little/little2.webp',
+      '/assets/Little/little3.webp',
+      '/assets/Little/little4.webp',
+      '/assets/Little/little5.webp',
+      '/assets/Little/little7.webp',
+      '/assets/Little/little8.webp',
+      '/assets/Little/little9.webp',
+      '/assets/Little/little0.png'
     ],
     love_count: 560,
     distance_km: 1.5,
     tags: ['trending'],
     menu_recommendations: [
       { name: 'Original Salt Bread', price: 'Rp 25.000', image: 'https://images.unsplash.com/photo-1598373182133-52452f7691ef?auto=format&fit=crop&w=600&q=80' },
-      { name: 'Truffle Salt Bread', price: 'Rp 35.000', image: 'https://images.unsplash.com/photo-1608198093002-ad4e005484ec?auto=format&fit=crop&w=600&q=80' }
+      { name: 'Truffle Salt Bread', price: 'Rp 35.000', image: '/assets/Little/little6.webp' }
+    ],
+    insider_tips: [
+      {
+        name: 'Rara T.',
+        avatar: '/assets/avatars/rara.jpg',
+        fallbackAvatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80',
+        tip: "Don't come after 4 PM on a weekend, you won't get a seat."
+      },
+      {
+        name: 'Bimo',
+        avatar: '/assets/avatars/bimo.jpg',
+        fallbackAvatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=150&q=80',
+        tip: 'Their matcha latte is secretly the best item on the menu.'
+      }
     ]
   },
   {
@@ -217,15 +338,56 @@ export const MOCK_SPOTS: Spot[] = [
     price_range: 'Rp 50k - 100k',
     price_level: 2,
     images: [
-      'https://drive.google.com/uc?export=download&id=1knEdfth7hJBUsrdKlA-Xitupzta13t7s',
-      'https://drive.google.com/uc?export=download&id=1JJCbOquiltfMRo3irI1z-wpJAucrR5OS',
-      'https://drive.google.com/uc?export=download&id=15Rah8N-sJqLaKsoXHH9QzEZG-fy6oQDb'
+      '/assets/Mregg/egg3.png',
+      '/assets/Mregg/egg4.png',
+      '/assets/Mregg/egg14.png',
+      '/assets/Mregg/egg15.png',
+      '/assets/Mregg/egg16.png',
+      '/assets/Mregg/egg17.png',
+      'https://images.unsplash.com/photo-1550966871-3ed3cdb5ed0c?auto=format&fit=crop&w=800&q=80',
+      'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=800&q=80',
+      'https://images.unsplash.com/photo-1586190848861-99aa4a171e90?auto=format&fit=crop&w=800&q=80',
+      'https://images.unsplash.com/photo-1623238913973-21e45cced554?auto=format&fit=crop&w=800&q=80',
+      'https://images.unsplash.com/photo-1572490122747-3968b75cc699?auto=format&fit=crop&w=800&q=80',
+      'https://images.unsplash.com/photo-1525351484163-7529414344d8?auto=format&fit=crop&w=800&q=80',
+      'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=800&q=80'
+    ],
+    ambiance_images: [
+      '/assets/Mregg/egg3.png',
+      '/assets/Mregg/egg14.png',
+      '/assets/Mregg/egg15.png',
+      '/assets/Mregg/egg16.png',
+      '/assets/Mregg/egg17.png',
+      'https://images.unsplash.com/photo-1550966871-3ed3cdb5ed0c?auto=format&fit=crop&w=800&q=80',
+      'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=800&q=80',
+      'https://images.unsplash.com/photo-1586190848861-99aa4a171e90?auto=format&fit=crop&w=800&q=80',
+      'https://images.unsplash.com/photo-1623238913973-21e45cced554?auto=format&fit=crop&w=800&q=80',
+      'https://images.unsplash.com/photo-1572490122747-3968b75cc699?auto=format&fit=crop&w=800&q=80',
+      'https://images.unsplash.com/photo-1525351484163-7529414344d8?auto=format&fit=crop&w=800&q=80',
+      'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=800&q=80'
     ],
     love_count: 670,
     distance_km: 0.6,
     tags: ['late-night'],
     menu_recommendations: [
-      { name: 'The OG Smashed Breakfast Burger', price: 'Rp 75.000', image: 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=600&q=80' }
+      { name: 'The OG Smashed Breakfast Burger', price: 'Rp 75.000', image: '/assets/Mregg/egg3.png' },
+      { name: 'Truffle Garlic Tater Tots', price: 'Rp 42.000', image: 'https://images.unsplash.com/photo-1623238913973-21e45cced554?auto=format&fit=crop&w=600&q=80' },
+      { name: 'Classic Vanilla Malt Shake', price: 'Rp 48.000', image: 'https://images.unsplash.com/photo-1572490122747-3968b75cc699?auto=format&fit=crop&w=600&q=80' },
+      { name: 'Pastrami & Sunny Egg Toast', price: 'Rp 68.000', image: 'https://images.unsplash.com/photo-1525351484163-7529414344d8?auto=format&fit=crop&w=600&q=80' }
+    ],
+    insider_tips: [
+      {
+        name: 'Dimas S.',
+        avatar: '/assets/avatars/dimas.jpg',
+        fallbackAvatar: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&w=150&q=80',
+        tip: 'Best late-night smashed burger in Blok M. Counter seats give the ultimate retro diner feel.'
+      },
+      {
+        name: 'Nadia P.',
+        avatar: '/assets/avatars/nadia.jpg',
+        fallbackAvatar: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=150&q=80',
+        tip: 'Pair the burger with their garlic tots and milkshakes for the perfect midnight meal.'
+      }
     ]
   },
   {
@@ -532,7 +694,7 @@ export const MOCK_NEWS: NewsArticle[] = [
       { type: 'image', content: 'https://images.unsplash.com/photo-1563245372-f21724e3856d?auto=format&fit=crop&w=600&q=80' },
       { type: 'heading', content: '2. All-Night American Diner' },
       { type: 'text', content: 'Mr. Egg in Blok M is bringing the classic American diner experience to Jakarta. With bright neon lights, lo-fi hip hop on the speakers, and a menu featuring truffle tater tots and smashed breakfast burgers, it is the perfect spot for a post-party cooldown.' },
-      { type: 'image', content: 'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?auto=format&fit=crop&w=600&q=80' },
+      { type: 'image', content: '/assets/Mregg/egg4.png' },
       { type: 'heading', content: '3. Late Night Noodles' },
       { type: 'text', content: 'Demie Bakmie 69 serves up springy noodles and rich duck broth until the early hours. Tucked away on a mezzanine, it feels like a secret haven for those who need a hearty, warm bowl before calling it a night.' }
     ],
@@ -576,6 +738,74 @@ export const MOCK_NEWS: NewsArticle[] = [
     image: 'https://images.unsplash.com/photo-1571217036683-17eb9c2c61d5?auto=format&fit=crop&w=600&q=80',
     date: '2026-08-05',
     author: 'Nadia Putri'
+  },
+  {
+    id: 'n7',
+    title: 'Matcha & Tea Bars: South Jakarta\'s New Afternoon Ritual',
+    type: 'Deep Dive',
+    summary: 'A new wave of minimalist tea ateliers in Panglima Polim and Dharmawangsa is challenging Jakarta\'s coffee dominance.',
+    content: 'Specialty green tea sourced directly from Uji and Shizuoka is carving out its own territory in South Jakarta. From ceremonial whisking tables to matcha-infused Basque cheesecakes, explore where Jakartans are finding serene midday resets.',
+    contentBlocks: [
+      { type: 'text', content: 'For over a decade, South Jakarta has lived and breathed third-wave coffee. But over the last six months, a quiet revolution has taken root along the tree-lined streets of Panglima Polim and Dharmawangsa: ceremonial matcha bars.' },
+      { type: 'heading', content: 'The Philosophy of Single-Origin Cultivars' },
+      { type: 'text', content: 'Unlike commercial matcha lattes loaded with artificial syrups, these new sanctuaries treat green tea with the solemnity of fine wine. Patrons can sample single-cultivar teas like Okumidori and Samidori, whisked fresh with bamboo chasen right before their eyes.' },
+      { type: 'image', content: 'https://images.unsplash.com/photo-1576092762791-dd9e2220abd4?auto=format&fit=crop&w=600&q=80' },
+      { type: 'heading', content: 'Top Spots to Unwind' },
+      { type: 'text', content: 'Head to Chaya in Dharmawangsa for quiet tatami-inspired booths, or visit Ocha Studio in Melawai for iced ceremonial matcha paired with yuzu madeleines. The unhurried tempo offers the perfect sanctuary from the bustling metropolis.' }
+    ],
+    image: 'https://images.unsplash.com/photo-1536256263959-770b48d82b0a?auto=format&fit=crop&w=600&q=80',
+    date: '2026-07-29',
+    author: 'Karina Salim'
+  },
+  {
+    id: 'n8',
+    title: 'Vintage Hunting in Pasar Santa: What\'s Worth Buying',
+    type: 'Quick Hits',
+    summary: 'The upper floor of Pasar Santa has reinvented itself once again. Here is your treasure hunting guide for vinyl, cameras, and apparel.',
+    content: 'Long after the initial culinary hype subsided, Pasar Santa\'s second floor has matured into a thriving enclave of passionate collectors. From Japanese pressed jazz records to refurbished Olympus 35mm rangefinders, here is where to look.',
+    contentBlocks: [
+      { type: 'text', content: 'Long after the initial culinary hype subsided, Pasar Santa\'s upper floor has matured into an authentic bohemian bazaar. It is now home to dedicated vinyl crate diggers, analog camera restorers, and curated thrift purveyors.' },
+      { type: 'heading', content: '1. Vinyl Crate Digging at Substore' },
+      { type: 'text', content: 'Substore remains the holy grail for collectors of classic Indonesian 70s rock, Japanese City Pop, and underground post-punk. The staff know their catalogs intimately and are always willing to spin a record on their listening deck.' },
+      { type: 'image', content: 'https://images.unsplash.com/photo-1539185441755-769473a23570?auto=format&fit=crop&w=600&q=80' },
+      { type: 'heading', content: '2. Restored Point-and-Shoot Cameras' },
+      { type: 'text', content: 'Analog photography enthusiasts will love the tiny glass booths tucked in the corner aisles. You will find fully serviced Canon Sure Shots, Yashica T-series, and fresh rolls of Kodak Portra and Ilford black-and-white film.' }
+    ],
+    image: 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?auto=format&fit=crop&w=600&q=80',
+    date: '2026-07-18',
+    author: 'Rian Pratama'
+  },
+  {
+    id: 'n9',
+    title: 'Rooftop Sundowners in SCBD: Golden Hour Elevated',
+    type: 'Quick Hits',
+    summary: 'Where to catch breathtaking sunset views as the high-rises illuminate against the Jakarta evening sky.',
+    content: 'As the humid afternoon transitions into evening, there is nothing quite like watching the Sudirman skyline transition from dusk to twilight. Here are the premier vantage points for aperitifs and city vistas.',
+    contentBlocks: [
+      { type: 'text', content: 'As the humid afternoon transitions into evening, there is nothing quite like watching the Sudirman skyline transition from warm amber into illuminated glass towers. Finding the right high-altitude terrace makes all the difference.' },
+      { type: 'heading', content: 'Vantage Points Above the Skyline' },
+      { type: 'text', content: 'Whether you prefer craft botanical gin tonics or non-alcoholic seasonal spritzers, venues such as Henshin and Alto offer panoramic glass walls that showcase Jakarta’s kinetic urban beauty from 50 floors up.' },
+      { type: 'image', content: 'https://images.unsplash.com/photo-1519671482749-fd09be7ccebf?auto=format&fit=crop&w=600&q=80' }
+    ],
+    image: 'https://images.unsplash.com/photo-1519671482749-fd09be7ccebf?auto=format&fit=crop&w=600&q=80',
+    date: '2026-07-10',
+    author: 'Sarah Wijaya'
+  },
+  {
+    id: 'n10',
+    title: 'The Independent Coffee Roasters of Kota Tua',
+    type: 'Deep Dive',
+    summary: 'Historic Dutch-era colonial arcades are finding new vitality through artisanal micro-roasters.',
+    content: 'Beyond the tourist crowds of Fatahillah Square, independent roasters are restoring neglected heritage buildings into aromatic coffee laboratories, celebrating indigenous beans from Aceh Gayo to Flores Bajawa.',
+    contentBlocks: [
+      { type: 'text', content: 'Kota Tua is undergoing a subtle, flavor-driven renaissance. Rather than commercial tourist franchises, independent micro-roasters are moving into soaring brick archways and Dutch colonial buildings, bringing modern extraction science to centuries-old architecture.' },
+      { type: 'heading', content: 'Single Origin Terroirs' },
+      { type: 'text', content: 'These spots roast on-site in small 2-kilogram batches, celebrating rare micro-lots from North Sumatra, Bali Kintamani, and Toraja. Enjoying a slow pour-over beneath high teak ceilings offers an unmatched sense of place.' },
+      { type: 'image', content: 'https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?auto=format&fit=crop&w=600&q=80' }
+    ],
+    image: 'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&w=600&q=80',
+    date: '2026-06-28',
+    author: 'Kelvin Lee'
   }
 ];
 

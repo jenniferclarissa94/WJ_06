@@ -1,8 +1,24 @@
 import { MOCK_SPOTS, MOCK_EVENTS, MOCK_NEWS } from '../data';
 import { MapPin, Calendar, Heart, ArrowRight, Search, History } from 'lucide-react';
 import { useState } from 'react';
+import GeminiHomeBar from '../components/GeminiHomeBar';
 
-export default function HomeView({ navigate, navigateDetail }: { navigate: (tab: string) => void, navigateDetail?: (type: string, id: string) => void }) {
+export default function HomeView({ 
+  navigate, 
+  navigateDetail, 
+  onOpenGemini 
+}: { 
+  navigate: (tab: string) => void, 
+  navigateDetail?: (type: string, id: string) => void,
+  onOpenGemini?: (prompt?: string) => void
+}) {
+  const getGreeting = () => {
+    const hour = new Date().getHours();
+    if (hour < 12) return 'Good morning';
+    if (hour < 18) return 'Good afternoon';
+    return 'Good evening';
+  };
+
   const trendingSpots = [MOCK_SPOTS[4], MOCK_SPOTS[3], MOCK_SPOTS[1]]; // Little Salt Pan, Zodiac, 7 Speed Coffee
   const upcomingEvents = MOCK_EVENTS;
   const insiderTips = MOCK_NEWS.slice(0, 3); // Top 3 Insider Tips
@@ -14,7 +30,7 @@ export default function HomeView({ navigate, navigateDetail }: { navigate: (tab:
   const searchHistory = ['Kopi Tuku', 'Senopati late night', 'Art Jakarta', 'WFC near me'];
 
   return (
-    <div className="pb-24 pt-6 px-4 max-w-md mx-auto space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+    <div className="pb-24 pt-6 px-4 max-w-md mx-auto space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
       <header className="flex flex-col relative">
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center">
@@ -63,11 +79,16 @@ export default function HomeView({ navigate, navigateDetail }: { navigate: (tab:
           </div>
         )}
 
-        <div className="mt-6 mb-6">
-          <h1 className="text-xl font-medium text-gray-300 mb-1">Wassup, Andi! 👋</h1>
+        <div className="mt-6">
+          <h1 className="text-xl font-medium text-gray-300 mb-1.5">{getGreeting()} 👋</h1>
           <h2 className="text-2xl font-extrabold tracking-tight leading-tight">Ready to uncover <span className="text-gradient">Jakarta's</span> best spots today?</h2>
         </div>
       </header>
+
+      {/* Gemini Assistant: Exactly in between 'Ready to uncover' and 'Trending Near You' */}
+      <div>
+        <GeminiHomeBar onOpenAssistant={onOpenGemini || (() => {})} />
+      </div>
 
       {/* Trending Spot */}
       <section>
@@ -95,7 +116,7 @@ export default function HomeView({ navigate, navigateDetail }: { navigate: (tab:
 
               <div className="absolute bottom-0 left-0 right-0 p-5 z-20">
                 <div className="flex items-center gap-2 mb-2">
-                  <span className="text-[10px] font-bold uppercase tracking-wider text-white bg-[var(--color-primary)] px-2 py-1 rounded shadow-sm">
+                  <span className="text-[9px] font-bold uppercase tracking-wider text-white bg-[var(--color-primary)] px-2 py-0.5 rounded-[4px] shadow-sm">
                     {spot.category}
                   </span>
                   <span className="text-xs font-medium text-gray-300 flex items-center">
@@ -129,7 +150,7 @@ export default function HomeView({ navigate, navigateDetail }: { navigate: (tab:
                   onError={(e) => { e.currentTarget.src = 'https://images.unsplash.com/photo-1459749411175-04bf5292ceea?auto=format&fit=crop&w=600&q=80'; }}
                 />
                 <div className="absolute top-2 right-2">
-                   <span className="text-[10px] font-bold text-black bg-[var(--color-secondary)] px-2 py-1 rounded w-fit uppercase mb-1 inline-block shadow-sm">
+                   <span className="text-[9px] font-bold uppercase tracking-wider text-black bg-[var(--color-secondary)] px-2 py-0.5 rounded-[4px] shadow-sm inline-block">
                      {event.type}
                    </span>
                 </div>
