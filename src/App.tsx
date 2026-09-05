@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import BottomNav from './components/BottomNav';
 import HomeView from './views/HomeView';
 import CulinaryView from './views/CulinaryView';
@@ -21,6 +21,10 @@ export default function App() {
   const [detailView, setDetailView] = useState<{type: string, id: string} | null>(null);
   const [isGeminiOpen, setIsGeminiOpen] = useState(false);
   const [geminiInitialPrompt, setGeminiInitialPrompt] = useState<string | undefined>(undefined);
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+  }, [detailView, currentTab]);
 
   const handleOpenGemini = (prompt?: string) => {
     setGeminiInitialPrompt(prompt);

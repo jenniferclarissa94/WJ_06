@@ -10,15 +10,15 @@ export default function CulinaryView({
   navigateDetail?: (type: string, id: string) => void,
   onOpenGemini?: () => void 
 }) {
-  const [filter, setFilter] = useState<'Near Me' | 'WFC Friendly' | 'Late Night'>('Near Me');
+  const [filter, setFilter] = useState<'All' | 'Near Me' | 'WFC Friendly' | 'Late Night'>('All');
 
   const filteredSpots = MOCK_SPOTS.filter(spot => {
     if (filter === 'WFC Friendly') return spot.tags?.includes('wfc') || spot.wfc_score >= 4;
     if (filter === 'Late Night') return spot.tags?.includes('late-night');
-    return true; // Near me includes all
+    return true; // 'All' and 'Near Me' include all spots
   }).sort((a, b) => {
     if (filter === 'Near Me') return (a.distance_km || 0) - (b.distance_km || 0);
-    return 0; // retain default order for others, or sort by distance anyway
+    return 0; // retain default order for others
   });
 
   return (
@@ -36,8 +36,11 @@ export default function CulinaryView({
         
         {/* Filters */}
         <div className="flex gap-2 overflow-x-auto pb-2 no-scrollbar">
-          <button className="shrink-0 flex items-center gap-1 bg-white/10 hover:bg-white/20 text-white px-3 py-1.5 rounded-full text-xs font-medium transition">
-            <Filter size={14} /> Filter
+          <button 
+            onClick={() => setFilter('All')}
+            className={`shrink-0 px-4 py-1.5 rounded-full text-xs font-bold transition ${filter === 'All' ? 'bg-[var(--color-primary)] text-white shadow-[0_0_15px_rgba(77,71,208,0.4)]' : 'bg-white/5 text-white border border-white/10 hover:bg-white/10'}`}
+          >
+            All
           </button>
           <button 
             onClick={() => setFilter('Near Me')}

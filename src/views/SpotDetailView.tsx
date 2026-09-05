@@ -1,6 +1,6 @@
 import { MOCK_SPOTS } from '../data';
 import { ArrowLeft, MapPin, Heart, Wifi, Volume2, Share2, PenLine, X, Link, Twitter, Facebook, ExternalLink, Camera } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import GeminiHeaderButton from '../components/GeminiHeaderButton';
 import ImagePreviewModal from '../components/ImagePreviewModal';
@@ -16,6 +16,10 @@ export default function SpotDetailView({
   onRequireLogin?: () => void,
   onOpenGemini?: (prompt?: string) => void 
 }) {
+  useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+  }, [id]);
+
   const spot = MOCK_SPOTS.find(s => s.id === id);
   const [previewIndex, setPreviewIndex] = useState<number | null>(null);
   const [showShareMenu, setShowShareMenu] = useState(false);

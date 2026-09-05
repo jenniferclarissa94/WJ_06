@@ -116,6 +116,12 @@ async function startServer() {
     }
   });
 
+  // Ensure /assets/Glodok/g6 is served with image/jpeg Content-Type
+  app.get(['/assets/Glodok/g6', '/assets/Glodok/g6.jpg'], (req, res) => {
+    res.type('image/jpeg');
+    res.sendFile(path.join(process.cwd(), 'public/assets/Glodok/g6'));
+  });
+
   // Serve public static assets
   app.use(express.static(path.join(process.cwd(), 'public')));
 

@@ -1,6 +1,6 @@
 import { MOCK_EVENTS } from '../data';
 import { ArrowLeft, Calendar, MapPin, Ticket, ExternalLink } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import GeminiHeaderButton from '../components/GeminiHeaderButton';
 import ImagePreviewModal from '../components/ImagePreviewModal';
 
@@ -13,6 +13,10 @@ export default function EventDetailView({
   onBack: () => void,
   onOpenGemini?: (prompt?: string) => void 
 }) {
+  useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+  }, [id]);
+
   const evt = MOCK_EVENTS.find(e => e.id === id);
   const [previewIndex, setPreviewIndex] = useState<number | null>(null);
 

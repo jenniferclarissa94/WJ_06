@@ -73,6 +73,11 @@ export default function NewsDetailView({
           src={news.image} 
           alt={news.title} 
           onClick={() => handleOpenPreview(news.image)}
+          onError={(e) => {
+            if (!e.currentTarget.src.endsWith('.jpg') && !e.currentTarget.src.endsWith('.jpeg') && !e.currentTarget.src.endsWith('.webp') && !e.currentTarget.src.endsWith('.png')) {
+              e.currentTarget.src += '.jpg';
+            }
+          }}
           className="w-full h-64 object-cover cursor-pointer hover:opacity-95 transition" 
         />
 
@@ -94,6 +99,11 @@ export default function NewsDetailView({
                       src={block.content} 
                       alt={`Content image ${i}`} 
                       onClick={() => handleOpenPreview(block.content)}
+                      onError={(e) => {
+                        if (!e.currentTarget.src.endsWith('.jpg') && !e.currentTarget.src.endsWith('.jpeg') && !e.currentTarget.src.endsWith('.webp') && !e.currentTarget.src.endsWith('.png')) {
+                          e.currentTarget.src += '.jpg';
+                        }
+                      }}
                       className="w-full h-48 object-cover rounded-xl my-4 border border-white/10 cursor-pointer hover:opacity-95 transition shadow-sm" 
                     />
                   );
