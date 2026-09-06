@@ -36,9 +36,9 @@ export default function HomeView({
           <div className="flex items-center">
             {!imgError ? (
               <img 
-                src="/white%20ver@3x.png" 
+                src="/assets/WJWhite.png" 
                 alt="Wassup Jakarta Logo" 
-                className="h-8 object-contain"
+                className="h-[72px] w-auto object-contain object-left"
                 onError={() => setImgError(true)}
               />
             ) : (

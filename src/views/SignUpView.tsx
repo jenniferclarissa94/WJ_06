@@ -19,7 +19,7 @@ export default function SignUpView({ onBack }: { onBack: () => void }) {
       <div className="px-6 py-8 max-w-md mx-auto w-full flex-1 flex flex-col justify-center">
         <div className="mb-10 text-center">
           <div className="flex justify-center mb-6">
-            <img src="/white ver@3x.png" alt="Wassup Jakarta Logo" className="h-12 object-contain" />
+            <img src="/assets/WJWhite.png" alt="Wassup Jakarta Logo" className="h-12 object-contain" />
           </div>
           <h1 className="text-3xl font-extrabold tracking-tight mb-3">
             {step === 1 ? 'Create Account' : 'Verify Phone'}
